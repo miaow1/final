@@ -25,7 +25,7 @@ namespace fms::gamma {
 
 	inline double cdf(double x, double a, double b)
 	{
-		return ::igam(a, b * x) / ::gamma(a);
+		return ::igam(a, b * x);
 	}
 
 	// The Gamma distribution has density function g(x) = x ^ (a - 1) exp(-b x) b ^ a / Gamma(a), x > 0,
@@ -40,6 +40,7 @@ namespace fms::gamma {
 	inline std::pair<double, double> convert(double s)
 	{
 		//!!! return (a, b) above
+		s = 1 / (exp(s * s) - 1);
 		return std::pair(s, s);
 	}
 
@@ -49,11 +50,9 @@ namespace fms::gamma {
 	{
 		double s = sigma * sqrt(t);
 
-		//!!! delete this comment and the next three lines
-		s = s;
-		f = f;
-		k = k;
+		
 		//!!! calculate put value
-		return 0;
+		double a = gamma::convert(s).first;
+		return k * gamma::cdf(k / f, b, b) - f * gamma::cdf(k / f, b + 1, b);
 	}
 }
